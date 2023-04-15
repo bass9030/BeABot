@@ -31,7 +31,7 @@ public class ImageDB {
     }
 
     public String getImage() {
-        return Bitmap2Base64(this.Image);
+        return this.Image != null ? Bitmap2Base64(this.Image) : null;
     }
 
     public Bitmap getImageBitmap() {

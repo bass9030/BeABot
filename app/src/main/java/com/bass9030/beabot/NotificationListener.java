@@ -2,29 +2,19 @@ package com.bass9030.beabot;
 
 import android.app.Notification;
 import android.app.Person;
-import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,9 +67,9 @@ public class NotificationListener extends NotificationListenerService {
         boolean isMultiChat = sbn.getUser().hashCode() != 0;
         Icon icon = ((Person)((Bundle)extras.getParcelableArray(Notification.EXTRA_MESSAGES)[0]).get("sender_person")).getIcon();
         Bitmap profileImage = ((BitmapDrawable)icon.loadDrawable(MainActivity.getContext())).getBitmap();
-        Bitmap bitmap = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON_BIG);
+//        Bitmap bitmap = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON_BIG);
 
-        Log.d("isBitmapIsNull", bitmap != null ? "true" : "false");
+//        Log.d("isBitmapIsNull", bitmap != null ? "true" : "false");
 
         Notification.Action session = null;
 
@@ -104,9 +94,9 @@ public class NotificationListener extends NotificationListenerService {
 //                " msg : " + msg);
         ImageDB imageDB = new ImageDB(
                 profileImage,
-                bitmap
+                null
         );
-        ReplierManager replier = new ReplierManager(
+        Replier replier = new Replier(
                 packageName,
                 room.toString(),
                 session,
@@ -116,7 +106,7 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void runTestCode(String room, String msg, String sender, boolean isGroupChat,
-                             ReplierManager replier, ImageDB imageDB, String packageName, boolean isMultiChat) {
+                             Replier replier, ImageDB imageDB, String packageName, boolean isMultiChat) {
 //        Log.d("room", !room.equals("베스봇") ? "true" : "false");
 //        Log.d("room", !room.equals("bass9030") ? "true" : "false");
         Log.d("msg", msg);

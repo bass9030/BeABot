@@ -2,14 +2,14 @@ package com.bass9030.beabot;
 
 import android.app.Notification;
 
-public class ReplierManager {
+public class Replier {
     private String packageName;
     private String room;
     private Notification.Action session;
     private boolean isDebugChat;
     private messageSender msgSender;
 
-    public ReplierManager(String packageName, String room, Notification.Action session, boolean isDebugChat) {
+    public Replier(String packageName, String room, Notification.Action session, boolean isDebugChat) {
         this.packageName = packageName;
         this.room = room;
         this.session = session;
