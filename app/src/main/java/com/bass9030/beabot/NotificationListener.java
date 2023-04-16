@@ -44,7 +44,7 @@ public class NotificationListener extends NotificationListenerService {
 
 //    private Pair<Bitmap, Bitmap> loadLargeIcon(StatusBarNotification paramStatusBarNotification) {
 //        Bitmap bitmap;
-//        bitmap = (paramStatusBarNotification.getNotification()).largeIcon;
+//        bitmap = (paramStatusBarNotification.getNotification()).;
 //        Parcelable[] arrayOfParcelable = (paramStatusBarNotification.getNotification()).extras.getParcelableArray("android.messages");
 //        return (arrayOfParcelable.length > 0) ? new Pair(icon2Bitmap(paramContext, ((Person)((Bundle)arrayOfParcelable[0]).getParcelable("sender_person")).getIcon()), bitmap) : new Pair(bitmap, null);
 //    }
@@ -65,8 +65,14 @@ public class NotificationListener extends NotificationListenerService {
         boolean isGroupChat = room != null;
         if(room == null) room = sender;
         boolean isMultiChat = sbn.getUser().hashCode() != 0;
-        Icon icon = ((Person)((Bundle)extras.getParcelableArray(Notification.EXTRA_MESSAGES)[0]).get("sender_person")).getIcon();
-        Bitmap profileImage = ((BitmapDrawable)icon.loadDrawable(MainActivity.getContext())).getBitmap();
+        Icon icon = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P)
+            icon = ((Person)((Bundle)extras.getParcelableArray(Notification.EXTRA_MESSAGES)[0]).get("sender_person")).getIcon();
+        Bitmap profileImage = null;
+        if(icon != null)
+            profileImage = ((BitmapDrawable)icon.loadDrawable(MainActivity.getContext())).getBitmap();
+        else
+            profileImage = notification.largeIcon;
 //        Bitmap bitmap = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON_BIG);
 
 //        Log.d("isBitmapIsNull", bitmap != null ? "true" : "false");
@@ -110,7 +116,7 @@ public class NotificationListener extends NotificationListenerService {
 //        Log.d("room", !room.equals("베스봇") ? "true" : "false");
 //        Log.d("room", !room.equals("bass9030") ? "true" : "false");
         Log.d("msg", msg);
-        if(!room.equals("bass9030")) return;
+        if(!room.equals("bass9030") || !room.equals("베스봇")) return;
         try {
             if(msg.equals("!프로필사진")) {
                 replier.reply(imageDB.getProfileHash());
