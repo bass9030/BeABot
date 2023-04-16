@@ -9,4 +9,19 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_editor">Editor</string>
+
+    <string name="defaultScript">/**\n
+ * @param {string} room\n
+ * @param {string} msg\n
+ * @param {string} sender\n
+ * @param {boolean} isGroupChat\n
+ * @param {replierType} replier\n
+ * @param {imageDBType} ImageDB\n
+ * @param {string} packageName\n
+ * @param {boolean} isMultiChat\n
+ */\n
+function response(room, msg, sender, isGroupChat, replier, ImageDB, packageName, isMultiChat) {\n
+\n
+}</string>
 </resources>
