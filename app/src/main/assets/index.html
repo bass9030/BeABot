@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="requireJS.js"></script>
+    <script src="loader.js"></script>
+    <script src="Replier.js"></script>
+    <script src="ImageDB.js"></script>
+    <script>
+        // var onMonacoEditorLoaded = () => console.log('dumb XD');
+    </script>
+    <style>
+        body {
+            overflow-y: hidden;
+            margin: 0;
+        }
+        div {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" style="width: 100%;"></div>
+    <script>
+        require.config({ 
+            paths: { vs: '.' },
+            'vs/nls': 
+            { 
+                availableLanguages: { '*': 'ko' } 
+            }
+        });
+        let editor;
+        require(['vs/editor/editor.main'], function () {
+            editor = monaco.editor.create(document.getElementById('container'), {
+                value: ['function x() {', '\tconsole.log("Hello world!");', '}'].join('\n'),
+                language: 'javascript',
+                theme: 'vs-dark',
+                automaticLayout: true
+            });
+
+            editor.onDidChangeModelLanguageConfiguration(() => {
+                console.log("loaded")
+                monaco.languages.typescript.javascriptDefaults.addExtraLib(ReplierStr);
+                monaco.languages.typescript.javascriptDefaults.addExtraLib(ImageDBStr);
+                onMonacoEditorLoaded();
+            });
+        });
+
+        resize();
+        addEventListener('resize', resize);
+
+        function resize() {
+            document.getElementById('container').setAttribute('style', `width: 100%; height: ${window.innerHeight}px;`)
+        }
+    </script>
+</body>
+</html>
