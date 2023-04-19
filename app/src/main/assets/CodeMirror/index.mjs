@@ -1,23 +1,43 @@
-import { basicSetup } from "codemirror"
-import { javascript, javascriptLanguage } from "@codemirror/lang-javascript"
-import { keymap, EditorView } from "@codemirror/view"
-import { indentWithTab } from "@codemirror/commands"
-import { vscodeKeymap } from "@replit/codemirror-vscode-keymap"
-import * as thememirror from "thememirror"
+"use static"
 
-//TODO: autocomplete 적용
+// import './tern';
+// // import './codemirror5/lib/codemirror'
+// // import './codemirror5/mode/javascript/javascript';
+// // import './codemirror5/addon/tern/tern';
+// import './codemirror';
+// import './codemirror/mode/javascript/javascript';
+// import './codemirror/addon/tern/worker';
+// import './codemirror/addon/tern/tern';
+// import ECMA from './ecmascript.json'
+// import 'codemirror/addon/tern';
+// import 'codemirror/mode/css/css';
 
-let view = new EditorView({
-    extensions: [
-        basicSetup,
-        javascript(),
-        keymap.of(indentWithTab, vscodeKeymap),
-        thememirror.dracula,
-    ],
-    parent: document.body
+// tern.Server
+const editor = CodeMirror(document.body, {
+    value: 'function test() { return \'hello world\'; }',
+    mode: 'javascript',
+    lineNumbers: true,
+    theme: 'material'
 });
 
-const resize = () => document.getElementsByClassName('cm-editor')[0].setAttribute("style", `height: ${window.innerHeight}px;`);
+var server = new CodeMirror.TernServer({defs: [ECMA,Chatbot]});
+editor.setOption("extraKeys", {
+    "Ctrl-Space": function(cm) { server.complete(cm); },
+    "Tab": function(cm) { server.complete(cm); },
+    "Ctrl-I": function(cm) { server.showType(cm); },
+    "Ctrl-O": function(cm) { server.showDocs(cm); },
+    "Alt-.": function(cm) { server.jumpToDef(cm); },
+    "Alt-,": function(cm) { server.jumpBack(cm); },
+    "Ctrl-Q": function(cm) { server.rename(cm); },
+    "Ctrl-.": function(cm) { server.selectName(cm); }
+});
 
-addEventListener('load', resize);
-addEventListener('resize', resize);
+CodeMirror.commands.autocomplete = function(cm) {
+    server.complete(cm);
+};
+
+editor.on("cursorActivity", function(cm) {
+    server.updateArgHints(cm);
+});
+
+// CodeMirror.
