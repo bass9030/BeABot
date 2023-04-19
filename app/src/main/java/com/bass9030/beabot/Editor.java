@@ -39,7 +39,7 @@ public class Editor extends AppCompatActivity {
 
         });
         Log.d("script", getString(R.string.defaultScript));
-        webView.loadUrl("file:///android_asset/index.html");
+        webView.loadUrl("file:///android_asset/CodeMirror/index.html");
         webView.evaluateJavascript("var onMonacoEditorLoaded = () => monaco.editor.getModels()[0].setValue(`"
                 + getString(R.string.defaultScript) + "`);", null);
 //        webView.evaluateJavascript("recoveryCode(`" + getString(R.string.defaultScript) + "`);", null);
