@@ -44,7 +44,11 @@
                 console.log("loaded")
                 monaco.languages.typescript.javascriptDefaults.addExtraLib(ReplierStr);
                 monaco.languages.typescript.javascriptDefaults.addExtraLib(ImageDBStr);
-                onMonacoEditorLoaded();
+                // onMonacoEditorLoaded();
+                const lines = document.getElementsByClassName('view-lines');
+                for(let i = 0; i < lines.length; i++) {
+                    lines[i].setAttribute('contenteditable', true)
+                }
             });
         });
 

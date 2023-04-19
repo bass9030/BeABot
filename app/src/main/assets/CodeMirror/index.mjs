@@ -13,14 +13,14 @@
 // import 'codemirror/mode/css/css';
 
 // tern.Server
-const editor = CodeMirror(document.body, {
+const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
     value: 'function test() { return \'hello world\'; }',
     mode: 'javascript',
     lineNumbers: true,
     theme: 'material'
 });
 
-var server = new CodeMirror.TernServer({defs: [ECMA,Chatbot]});
+var server = new CodeMirror.TernServer({defs: [ECMA]});
 editor.setOption("extraKeys", {
     "Ctrl-Space": function(cm) { server.complete(cm); },
     "Tab": function(cm) { server.complete(cm); },
@@ -39,5 +39,14 @@ CodeMirror.commands.autocomplete = function(cm) {
 editor.on("cursorActivity", function(cm) {
     server.updateArgHints(cm);
 });
+
+const resize = () => {
+    document.getElementsByClassName('CodeMirror')[0].setAttribute('style', 'height: ' + (window.innerHeight - document.getElementById('autocomplete').offsetHeight) + 'px;')
+    document.getElementById('autocomplete').setAttribute('style', 'width: ' + window.innerWidth + 'px;')
+    
+}
+
+resize();
+addEventListener('resize', resize);
 
 // CodeMirror.
