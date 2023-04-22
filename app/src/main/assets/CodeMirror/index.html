@@ -5,16 +5,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- tern.js dependencies -->
+    <script src="ecma.js"></script>
+    <script src="chatbot.js"></script>
+    <script src="acorn/acorn.js"></script>
+    <script src="acorn/acorn-loose.js"></script>
+    <script src="acorn/acorn-walk.js"></script>
+
+    <!-- tern.js -->
+    <script src="tern/lib/signal.js"></script>
+    <script src="tern/lib/tern.js"></script>
+    <script src="tern/lib/def.js"></script>
+    <script src="tern/lib/infer.js"></script>
+    <script src="tern/lib/comment.js"></script>
+    <script src="tern/plugin/doc_comment.js"></script>
 
     <!-- codemirror javascripts -->
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/addon/tern/tern.js"></script>
     <script src="codemirror/mode/javascript/javascript.js"></script>
+    <script src="codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="codemirror/addon/edit/closebrackets.js"></script>
     <script src="codemirror/addon/dialog/dialog.js"></script>
     <script src="codemirror/addon/hint/show-hint.js"></script>
 
     <!-- css -->
     <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="imeHandler/ime.css">
     <link rel="stylesheet" href="codemirror/addon/dialog/dialog.css">
     <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css">
     <link rel="stylesheet" href="codemirror/addon/tern/tern.css">
@@ -54,10 +71,17 @@
             outline: 1px solid slategrey;
         }
 
+        #autocomplete > a:active {
+            background-color: lightgrey;
+        }
+
         #autocomplete > a {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
             display: inline-block;
             line-height: 1.8rem;
-            width: 1.8rem;
+            width: 2rem;
             height: 1.8rem;
             font-size: 1.25rem;
             text-align: center;
@@ -66,25 +90,11 @@
             border-right: 1px solid gray;
         }
     </style>
-
-    <!-- tern.js dependencies -->
-    <script src="ecma.js"></script>
-    <script src="chatbot.js"></script>
-    <script src="acorn/acorn.js"></script>
-    <script src="acorn/acorn-loose.js"></script>
-    <script src="acorn/acorn-walk.js"></script>
-
-    <!-- tern.js -->
-    <script src="tern/lib/signal.js"></script>
-    <script src="tern/lib/tern.js"></script>
-    <script src="tern/lib/def.js"></script>
-    <script src="tern/lib/infer.js"></script>
-    <script src="tern/lib/comment.js"></script>
-    <script src="tern/plugin/doc_comment.js"></script>
 </head>
 <body>
-    <textarea id="editor"></textarea>
-    <div id="autocomplete"><a>⭾</a><a>(</a><a>)</a><a>{</a><a>}</a><a>[</a><a>]</a><a>=</a><a>!</a><a>"</a><a>'</a></div>
+    <div id="editor"></div>
+    <div id="autocomplete"><a>⭾</a><a>(</a><a>)</a><a>{</a><a>}</a><a>[</a><a>]</a><a>"</a><a>'</a><a>==</a><a>!=</a></div>
     <script src="index.mjs"></script>
+    <script src="imeHandler/ime.js"></script>
 </body>
 </html>

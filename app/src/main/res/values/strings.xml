@@ -16,7 +16,7 @@
  * @param {string} msg\n
  * @param {string} sender\n
  * @param {boolean} isGroupChat\n
- * @param {replierType} replier\n
+ * @param {Replier} replier\n
  * @param {imageDBType} ImageDB\n
  * @param {string} packageName\n
  * @param {boolean} isMultiChat\n

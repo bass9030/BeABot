@@ -212,7 +212,7 @@
       if (cm.getRange(Pos(from.line, from.ch - 2), from) == "[\"" &&
           cm.getRange(to, Pos(to.line, to.ch + 2)) != "\"]")
         after = "\"]";
-
+        // console.log(c);
       for (var i = 0; i < data.completions.length; ++i) {
         var completion = data.completions[i], className = typeToIcon(completion.type);
         if (data.guess) className += " " + cls + "guess";
@@ -274,6 +274,26 @@
   // Maintaining argument hints
 
   function updateArgHints(ts, cm) {
+    function _getArgsLen(str) {
+        const regex = /\.([_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*)\(.+\)?/.exec(str)
+        if(!!!regex) return 0;
+        const regexResult = regex[0];
+        const openIdx = regexResult.indexOf('(') + 1;
+        const closeIdx = regexResult.lastIndexOf(')') - 1;
+        const argStr = regexResult.slice(openIdx, closeIdx);
+        let isCommaIgnore = false;
+        let argLen = 0;
+        for(let i = 0; i < argStr.length; i++) {
+            const char = argStr[i];
+            if(char.match(/[\(\[{]/)) isCommaIgnore = true;
+            else if(char.match(/[\)\]]/)) isCommaIgnore = false;
+
+            if(!isCommaIgnore && char == ',') argLen++;
+        }
+
+        return argLen + 1;
+    }
+
     closeArgHints(ts);
 
     if (cm.somethingSelected()) return;
@@ -284,8 +304,10 @@
     if (lex.info != "call") return;
 
     var ch, argPos = lex.pos || 0, tabSize = cm.getOption("tabSize");
+    var code = [];
     for (var line = cm.getCursor().line, e = Math.max(0, line - 9), found = false; line >= e; --line) {
       var str = cm.getLine(line), extra = 0;
+      code.unshift(str);
       for (var pos = 0;;) {
         var tab = str.indexOf("\t", pos);
         if (tab == -1) break;
@@ -295,18 +317,29 @@
       ch = lex.column - extra;
       if (str.charAt(ch) == "(") {found = true; break;}
     }
+
     if (!found) return;
 
     var start = Pos(line, ch);
+    var argCount = _getArgsLen(code.join(''));
     var cache = ts.cachedArgHints;
-    if (cache && cache.doc == cm.getDoc() && cmpPos(start, cache.start) == 0)
+    // console.log(cache?.argCount, argCount)
+    // console.log(cache && cache.doc == cm.getDoc() && cmpPos(start, cache.start) == 0 && argCount == cache.argCount);
+    if (cache 
+        && cache.doc == cm.getDoc() 
+        && cmpPos(start, cache.start) == 0
+        && argCount == cache.argCount)
       return showArgHints(ts, cm, argPos);
+
+    // console.log(cm);
 
     ts.request(cm, {type: "type", preferFunction: true, end: start}, function(error, data) {
       if (error || !data.type || !(/^fn\(/).test(data.type)) return;
+    //   console.log(parseFnType(data.type, _getArgsLen(code.join(''))));
       ts.cachedArgHints = {
         start: start,
-        type: parseFnType(data.type),
+        argCount: argCount,
+        type: parseFnType(data.type, argCount),
         name: data.exprName || data.name || "fn",
         guess: data.guess,
         doc: cm.getDoc()
@@ -317,7 +350,7 @@
 
   function showArgHints(ts, cm, pos) {
     closeArgHints(ts);
-
+    // console.log(ts);
     var cache = ts.cachedArgHints, tp = cache.type;
     var tip = elt("span", cache.guess ? cls + "fhint-guess" : null,
                   elt("span", cls + "fname", cache.name), "(");
@@ -340,35 +373,51 @@
     }, 20)
   }
 
-  function parseFnType(text) {
-    var args = [], pos = 3;
+  function parseFnType(text, argCount) {
+    // var args = [], rettype;
+    // console.log('called `parseFnType`', text, argCount);
+    function _getFnType(type) {
+        // var type = fnTypes[idx];
+        var pos = 3;
+        var _args = [];
 
-    function skipMatching(upto) {
-      var depth = 0, start = pos;
-      for (;;) {
-        var next = text.charAt(pos);
-        if (upto.test(next) && !depth) return text.slice(start, pos);
-        if (/[{\[\(]/.test(next)) ++depth;
-        else if (/[}\]\)]/.test(next)) --depth;
-        ++pos;
-      }
+        function skipMatching(upto) {
+          var depth = 0, start = pos;
+          for (;;) {
+            var next = type.charAt(pos);
+            if (upto.test(next) && !depth) return type.slice(start, pos);
+            if (/[{\[\(]/.test(next)) ++depth;
+            else if (/[}\]\)]/.test(next)) --depth;
+            ++pos;
+          }
+        }
+        // Parse arguments
+        if (type.charAt(pos) != ")") for (;;) {
+          var name = type.slice(pos).match(/^([^, \(\[\{]+): /);
+          if (name) {
+            pos += name[0].length;
+            name = name[1];
+          }
+          _args.push({name: name, type: skipMatching(/[\),]/)});
+          if (type.charAt(pos) == ")") break;
+          pos += 2;
+        }
+
+        var rettype = type.slice(pos).match(/^\) -> (.*)$/);
+
+        return {args: _args, rettype: rettype && rettype[1]}
     }
-
-    // Parse arguments
-    if (text.charAt(pos) != ")") for (;;) {
-      var name = text.slice(pos).match(/^([^, \(\[\{]+): /);
-      if (name) {
-        pos += name[0].length;
-        name = name[1];
-      }
-      args.push({name: name, type: skipMatching(/[\),]/)});
-      if (text.charAt(pos) == ")") break;
-      pos += 2;
-    }
-
-    var rettype = text.slice(pos).match(/^\) -> (.*)$/);
-
-    return {args: args, rettype: rettype && rettype[1]};
+    const types = text.split('|');
+    let result = {args: [], rettype: 'any'};
+    types.some((type) => {
+        const e = _getFnType(type);
+        if(e.args.length == argCount) {
+            result = e;
+            return true;
+        } 
+    })
+    return result;
+    // return {args: args, rettype: rettype && rettype[1]};
   }
 
   // Moving to the definition of something

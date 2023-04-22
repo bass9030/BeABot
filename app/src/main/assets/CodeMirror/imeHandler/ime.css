@@ -1,0 +1,31 @@
+.CodeMirror-input-wrapper {
+    overflow: visible !important;
+  }
+  .CodeMirror-input-wrapper textarea {
+    resize: none;
+  }
+  
+  .CodeMirror-input-wrapper.in-composition textarea {
+    background-color: transparent;
+    min-width: 500px;
+    height: 1.5em !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    border: none;
+    z-index: 10;
+    top: -2px;
+    -webkit-box-shadow: compact(none, false, false, false, false, false, false, false, false, false);
+    -moz-box-shadow: compact(none, false, false, false, false, false, false, false, false, false);
+    box-shadow: compact(none, false, false, false, false, false, false, false, false, false);
+    -webkit-transition: compact(compact(none, false, false, false, false, false, false, false, false, false) false false);
+    -moz-transition: compact(compact(none, false, false, false, false, false, false, false, false, false) false false false);
+    -o-transition: compact(compact(none, false, false, false, false, false, false, false, false, false) false false false);
+    transition: compact(none, false, false, false, false, false, false, false, false, false);
+  }
+  .CodeMirror-input-wrapper.in-composition ~ .CodeMirror-scroll .CodeMirror-cursor {
+    display: none;
+  }
+  
+  .CodeMirror-text-in-composition {
+    color: transparent;
+  }
