@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,9 @@ public class NotificationListener extends NotificationListenerService {
         Bundle extras = notification.extras;
         Notification.Action[] actions = notification.actions;
         if(actions == null) return;
+        if(Arrays.stream(actions).noneMatch(e ->
+                e.title.toString().toLowerCase().contains("읽음") ||
+                e.title.toString().toLowerCase().contains("mark as read"))) return;
         String sender = extras.getString(Notification.EXTRA_TITLE);
         CharSequence msg = extras.getCharSequence(Notification.EXTRA_TEXT);
         CharSequence room = extras.getCharSequence(Notification.EXTRA_SUB_TEXT);
@@ -65,14 +69,13 @@ public class NotificationListener extends NotificationListenerService {
         boolean isGroupChat = room != null;
         if(room == null) room = sender;
         boolean isMultiChat = sbn.getUser().hashCode() != 0;
-        Icon icon = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P)
-            icon = ((Person)((Bundle)extras.getParcelableArray(Notification.EXTRA_MESSAGES)[0]).get("sender_person")).getIcon();
         Bitmap profileImage = null;
-        if(icon != null)
-            profileImage = ((BitmapDrawable)icon.loadDrawable(MainActivity.getContext())).getBitmap();
-        else
-            profileImage = notification.largeIcon;
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                Icon icon = ((Person)((Bundle)extras.getParcelableArray(Notification.EXTRA_MESSAGES)[0]).get("sender_person")).getIcon();
+                profileImage = ((BitmapDrawable)icon.loadDrawable(MainActivity.getContext())).getBitmap();
+            }else profileImage = notification.largeIcon;
+        }catch(Exception ex){ ex.printStackTrace();}
 //        Bitmap bitmap = (Bitmap) extras.get(Notification.EXTRA_LARGE_ICON_BIG);
 
 //        Log.d("isBitmapIsNull", bitmap != null ? "true" : "false");
