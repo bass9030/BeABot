@@ -17,11 +17,11 @@
  * @param {string} sender\n
  * @param {boolean} isGroupChat\n
  * @param {Replier} replier\n
- * @param {imageDBType} ImageDB\n
+ * @param {ImageDB} ImageDB\n
  * @param {string} packageName\n
  * @param {boolean} isMultiChat\n
  */\n
-function response(room, msg, sender, isGroupChat, replier, ImageDB, packageName, isMultiChat) {\n
+function response(room, msg, sender, isGroupChat, replier, imageDB, packageName, isMultiChat) {\n
 \n
 }</string>
 </resources>

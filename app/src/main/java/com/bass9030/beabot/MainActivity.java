@@ -49,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
 //        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        if(!notificationPermissionCheck()) {
-            Toast.makeText(this, "봇 작동을 위해 알림 접근을 허용해주세요", Toast.LENGTH_LONG).show();
-            Log.d("packageName", getPackageName());
-            Intent intent = new Intent(
-                    "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            intent.putExtra("package", getPackageName());
-            startActivity(intent);
-        }
+//        if(!notificationPermissionCheck()) {
+//            Toast.makeText(this, "봇 작동을 위해 알림 접근을 허용해주세요", Toast.LENGTH_LONG).show();
+//            Log.d("packageName", getPackageName());
+//            Intent intent = new Intent(
+//                    "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+//            intent.putExtra("package", getPackageName());
+//            startActivity(intent);
+//        }
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
