@@ -1,0 +1,9 @@
+{
+  "languages": [
+    {
+      "grammar":"TextMate/Syntaxes/JavaScriptNext.tmLanguage.json",
+      "name": "javascript",
+      "scopeName": "source.js"
+    }
+  ]
+}
